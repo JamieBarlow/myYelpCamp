@@ -3,7 +3,9 @@ const path = require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
+const morgan = require('morgan');
 
+// Mongoose
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
     // useCreateIndex: true,
@@ -16,16 +18,26 @@ db.once('open', () => {
     console.log('Database connected');
 });
 
+// Middleware
 const app = express();
 app.use(methodOverride('_method'));
+app.use(morgan('dev'));
+app.use(express.urlencoded({extended: true})) // Used to parse the req.body
+
+app.use((req, res, next) => {
+    let date = Date.now();
+    let dateFormatted = new Date(date).toString().slice(4, 24);
+    req.requestTime = dateFormatted;
+	console.log(req.method.toUpperCase(), req.path);
+	next();
+})
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Used to parse the req.body
-app.use(express.urlencoded({extended: true}))
-
+// Routing
 app.get('/', (req, res) => {
+    console.log(`request time: ${req.requestTime}`)
     res.render('home');
 })
 
@@ -58,6 +70,12 @@ app.put('/campgrounds/:id', async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground})
     res.redirect(`/campgrounds/${campground._id}`)
+})
+
+app.delete('/campgrounds/:id', async(req, res) => {
+    const { id } = req.params;
+    await Campground.findByIdAndDelete(id);
+    res.redirect('/campgrounds');
 })
 
 app.listen(3000, () => {
