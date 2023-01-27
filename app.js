@@ -32,6 +32,15 @@ app.use((req, res, next) => {
 	next();
 })
 
+// Password verification test function
+const verifyPassword = (req, res, next) => {
+    const { password } = req.query;        
+    if(password === 'chickennugget') {    // query string needs to be this
+        next();
+    }
+    res.send('Sorry you need a password!')
+}
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -39,6 +48,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.get('/', (req, res) => {
     console.log(`request time: ${req.requestTime}`)
     res.render('home');
+})
+
+app.get('/secret', verifyPassword, (req, res) => {
+	res.send(`MY SECRET IS: Sometimes I wear headphones in public so I
+	don't have to talk to people`)
 })
 
 app.get('/campgrounds', async (req, res) => {
