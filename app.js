@@ -28,7 +28,7 @@ app.use((req, res, next) => {
     let date = Date.now();
     let dateFormatted = new Date(date).toString().slice(4, 24);
     req.requestTime = dateFormatted;
-	console.log(req.method.toUpperCase(), req.path);
+	console.log("Method:", req.method.toUpperCase(), "Path:", req.path);
 	next();
 })
 
@@ -76,6 +76,11 @@ app.delete('/campgrounds/:id', async(req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+})
+
+// 404 error route
+app.use((req, res) => {
+    res.render('errorPage')
 })
 
 app.listen(3000, () => {
