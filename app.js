@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
 const morgan = require('morgan');
+const ejsMate = require('ejs-mate');
 
 // Mongoose
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -23,6 +24,7 @@ const app = express();
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true})) // Used to parse the req.body
+app.engine('ejs', ejsMate);
 
 let requestTime = function (req, res, next) {
     let date = Date.now();
