@@ -84,7 +84,7 @@ app.get('/campgrounds/:id', async (req, res) => {
     res.render('campgrounds/show', { campground });
 })
 
-// EDIT route
+// EDIT route (show form for editing item)
 app.get('/campgrounds/:id/edit', async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
