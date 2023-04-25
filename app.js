@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const Campground = require('./models/campground');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
+const AppError = require('../myYelpCamp/AppError');
 
 // Mongoose
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
@@ -42,7 +43,7 @@ const verifyPassword = (req, res, next) => {
     if(password === 'chickennugget') {    // query string needs to be this
         next();
     }
-    res.send('Sorry you need a password!')
+    throw new AppError('password required', 401);
 }
 
 app.set('view engine', 'ejs');
@@ -104,9 +105,16 @@ app.delete('/campgrounds/:id', async(req, res) => {
     res.redirect('/campgrounds');
 })
 
-// 404 error route
-app.use((req, res) => {
-    res.render('errorPage')
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(401).send('Something broke!')
+      next(err);
+  })
+
+// Generic error handling route
+app.use((err, req, res, next) => {
+	const { status = 500, message = 'Something went wrong' } = err;      
+	res.status(status).send(message);
 })
 
 app.listen(3000, () => {
