@@ -122,6 +122,17 @@ app.delete('/campgrounds/:id', wrapAsync(async(req, res) => {
     res.redirect('/campgrounds');
 }))
 
+const handleValidationErr = err => {
+    console.log(`${err._message}. Cannot add campground - reason: ${err.errors.title.properties.message}`)
+    return new AppError(`Validation failed...${err.message}`, 400)
+}
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    if (err.name === 'ValidationError') err = handleValidationErr(err);
+    console.log(err.name);
+    next(err);
+})
 app.use(verifyPassword);
 app.use(genericError);
 
