@@ -40,15 +40,20 @@ let requestTime = function (req, res, next) {
 
 app.use(requestTime);
 
+// Wrapper function for async route handlers
+function wrapAsync(fn){
+	return function(req, res, next) {
+		fn(req, res, next).catch(e => next(e))
+	}
+}
+
 // Password verification test function
 const verifyPassword = (req, res, next) => {
     const { password } = req.query;        
     if(password === 'chickennugget') {    // query string needs to be this
         next();
     }
-    const errObj = new AppError('Password required', 401);
-    console.dir(errObj);
-    next(errObj);
+    return next(new AppError('Password required', 401));
 }
 
 // Generic error handling
@@ -71,48 +76,51 @@ app.get('/secret', verifyPassword, (req, res) => {
 })
 
 // Index of all campgrounds
-app.get('/campgrounds', async (req, res) => {
+app.get('/campgrounds', wrapAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds });
-})
+}))
 
 // NEW form for new campgrounds
-app.get('/campgrounds/new', async (req, res) => {
+app.get('/campgrounds/new', wrapAsync(async (req, res) => {
     res.render('campgrounds/new');
-})
+}))
 
 // CREATE creating new campgrounds
-app.post('/campgrounds', async(req, res) => {
+app.post('/campgrounds', wrapAsync(async(req, res) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
-})
+}));
 
 // SHOW route for specific campground
-app.get('/campgrounds/:id', async (req, res) => {
+app.get('/campgrounds/:id', wrapAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
+    if (!campground) {
+        throw new AppError('Campground Not Found', 404);
+    }
     res.render('campgrounds/show', { campground });
-})
+}));
 
 // EDIT route (show form for editing item)
-app.get('/campgrounds/:id/edit', async (req, res) => {
+app.get('/campgrounds/:id/edit', wrapAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
-})
+}));
 
 // UPDATE route
-app.put('/campgrounds/:id', async (req, res) => {
+app.put('/campgrounds/:id', wrapAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground})
     res.redirect(`/campgrounds/${campground._id}`)
-})
+}))
 
 // DESTROY route
-app.delete('/campgrounds/:id', async(req, res) => {
+app.delete('/campgrounds/:id', wrapAsync(async(req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
-})
+}))
 
 app.use(verifyPassword);
 app.use(genericError);
