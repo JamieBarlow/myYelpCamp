@@ -5,7 +5,7 @@ const methodOverride = require('method-override');
 const Campground = require('./models/campground');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
-const AppError = require('../myYelpCamp/AppError');
+const AppError = require('./AppError');
 
 // Mongoose
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
@@ -25,8 +25,11 @@ const app = express();
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true})) // Used to parse the req.body
+app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
+app.set('views', path.join(__dirname, 'views'));
 
+// For logging middleware
 let requestTime = function (req, res, next) {
     let date = Date.now();
     let dateFormatted = new Date(date).toString().slice(4, 24);
@@ -43,11 +46,17 @@ const verifyPassword = (req, res, next) => {
     if(password === 'chickennugget') {    // query string needs to be this
         next();
     }
-    throw new AppError('password required', 401);
+    const errObj = new AppError('Password required', 401);
+    console.dir(errObj);
+    next(errObj);
 }
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Generic error handling
+const genericError = (err, req, res, next) => {
+	const { status = 500, message = 'Something went wrong' } = err;
+    console.log(err.status)    
+	res.status(status).send(message);
+}
 
 // Routing - home page
 app.get('/', (req, res) => {
@@ -105,17 +114,8 @@ app.delete('/campgrounds/:id', async(req, res) => {
     res.redirect('/campgrounds');
 })
 
-app.use((err, req, res, next) => {
-    console.error(err.stack)
-    res.status(401).send('Something broke!')
-      next(err);
-  })
-
-// Generic error handling route
-app.use((err, req, res, next) => {
-	const { status = 500, message = 'Something went wrong' } = err;      
-	res.status(status).send(message);
-})
+app.use(verifyPassword);
+app.use(genericError);
 
 app.listen(3000, () => {
     console.log('Serving on port 3000')
