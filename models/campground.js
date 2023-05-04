@@ -6,10 +6,16 @@ const CampgroundSchema = new Schema({
         type: String,
         required: [true, 'Name cannot be blank']
     },
-    image: String,
+    image: {
+      type: String,
+      required: [true, 'Please provide an image URL']  
+    },
     creator: String,
     username: String,
-    price: Number,
+    price: {
+        type: Number,
+        min: [1, 'Price must be greater than 0']
+    },
     description: String,
     location: String
 })
