@@ -8,6 +8,7 @@ const ejsMate = require('ejs-mate');
 const AppError = require('./AppError');
 const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
+const Joi = require('joi');
 
 // Mongoose
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
@@ -76,7 +77,23 @@ app.get('/campgrounds/new', catchAsync(async (req, res) => {
 
 // CREATE creating new campgrounds
 app.post('/campgrounds', catchAsync(async (req, res, next) => {
-    if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
+    // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
+    const campgroundSchema = Joi.object({
+        campground: Joi.object({
+            title: Joi.string().required().min(3),
+            image: Joi.string().required().uri(),
+            creator: Joi.string(),
+            username: Joi.string(),
+            price: Joi.number().required().min(0),
+            description: Joi.string().required().min(10),
+            location: Joi.string().required().min(3)
+        }).required()
+    })
+    const { error } = campgroundSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
