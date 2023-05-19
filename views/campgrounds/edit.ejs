@@ -2,18 +2,21 @@
     <div class="row">
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST">
+            <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="needs-validation">
                 <div class="mb-3">
                     <label class="form-label" for="title">Name</label>
-                    <input class="form-control" type="text" id="title" name="campground[title]" value="<%=campground.title%>">
+                    <input class="form-control" type="text" id="title" name="campground[title]" value="<%=campground.title%>" required aria-describedby="enterName">
+                    <div id="enterName" class="invalid-feedback">Please enter a name</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="campground[location]" value="<%=campground.location%>">
+                    <input class="form-control" type="text" id="location" name="campground[location]" value="<%=campground.location%>" required aria-describedby="enterLocation">
+                    <div id="enterLocation" class="invalid-feedback">Please enter a location</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="image">Image URL</label>
-                    <input class="form-control" type="text" id="image" name="campground[image]" value="<%=campground.image%>">
+                    <input class="form-control" type="text" id="image" name="campground[image]" value="<%=campground.image%>" required aria-describedby="enterImgURL">
+                    <div id="enterImgURL" class="invalid-feedback">Please enter an image URL</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="creator">Image By</label>
@@ -28,14 +31,16 @@
                     <div class="input-group">
                         <span class="input-group-text" id="price-label">£</span>
                         <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
-                            aria-describedby="price-label" name="campground[price]" value="<%=campground.price%>">
+                            aria-describedby="enterPrice" name="campground[price]" value="<%=campground.price%>" required>
+                            <div id="enterPrice" class="invalid-feedback">Please enter a price above £0</div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
                     <textarea class="form-control" type="text" id="description"
-                        name="campground[description]"><%= campground.description %></textarea>
-                </div>
+                        name="campground[description]" required aria-describedby="enterDescription"><%= campground.description %></textarea>
+                        <div id="enterDescription" class="invalid-feedback">Please enter a description</div>
+                    </div>
                 <div class="mb-3"><button class="btn btn-primary">Update Campground</button></div>
             </form>
             <a href="/campgrounds/<%=  campground._id %> ">Back to Campground</a>
