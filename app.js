@@ -6,6 +6,7 @@ const Campground = require('./models/campground');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
 const AppError = require('./AppError');
+const catchAsync = require('./utils/catchAsync');
 
 // Mongoose
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
@@ -24,7 +25,7 @@ db.once('open', () => {
 const app = express();
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
-app.use(express.urlencoded({extended: true})) // Used to parse the req.body
+app.use(express.urlencoded({ extended: true })) // Used to parse the req.body
 app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
@@ -34,23 +35,16 @@ let requestTime = function (req, res, next) {
     let date = Date.now();
     let dateFormatted = new Date(date).toString().slice(4, 24);
     req.requestTime = dateFormatted;
-	console.log("Method:", req.method.toUpperCase(), "Path:", req.path, "Time:", req.requestTime);
-	next();
+    console.log("Method:", req.method.toUpperCase(), "Path:", req.path, "Time:", req.requestTime);
+    next();
 }
 
 app.use(requestTime);
 
-// Wrapper function for async route handlers
-function wrapAsync(fn){
-	return function(req, res, next) {
-		fn(req, res, next).catch(e => next(e))
-	}
-}
-
 // Password verification test function
 const verifyPassword = (req, res, next) => {
-    const { password } = req.query;        
-    if(password === 'chickennugget') {    // query string needs to be this
+    const { password } = req.query;
+    if (password === 'chickennugget') {    // query string needs to be this
         next();
     }
     return next(new AppError('Password required', 401));
@@ -58,9 +52,9 @@ const verifyPassword = (req, res, next) => {
 
 // Generic error handling
 const genericError = (err, req, res, next) => {
-	const { status = 500, message = 'Something went wrong' } = err;
-    console.log(err.status)    
-	res.status(status).send(message);
+    const { status = 500, message = 'Something went wrong' } = err;
+    console.log(err.status)
+    res.status(status).send(message);
 }
 
 // Routing - home page
@@ -71,30 +65,30 @@ app.get('/', (req, res) => {
 
 // Secret password test
 app.get('/secret', verifyPassword, (req, res) => {
-	res.send(`MY SECRET IS: Sometimes I wear headphones in public so I
+    res.send(`MY SECRET IS: Sometimes I wear headphones in public so I
 	don't have to talk to people`)
 })
 
 // Index of all campgrounds
-app.get('/campgrounds', wrapAsync(async (req, res) => {
+app.get('/campgrounds', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds });
 }))
 
 // NEW form for new campgrounds
-app.get('/campgrounds/new', wrapAsync(async (req, res) => {
+app.get('/campgrounds/new', catchAsync(async (req, res) => {
     res.render('campgrounds/new');
 }))
 
 // CREATE creating new campgrounds
-app.post('/campgrounds', wrapAsync(async(req, res) => {
+app.post('/campgrounds', catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
 // SHOW route for specific campground
-app.get('/campgrounds/:id', wrapAsync(async (req, res) => {
+app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {
         throw new AppError('Campground Not Found', 404);
@@ -103,24 +97,28 @@ app.get('/campgrounds/:id', wrapAsync(async (req, res) => {
 }));
 
 // EDIT route (show form for editing item)
-app.get('/campgrounds/:id/edit', wrapAsync(async (req, res) => {
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
 }));
 
 // UPDATE route
-app.put('/campgrounds/:id', wrapAsync(async (req, res) => {
+app.put('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground})
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 
 // DESTROY route
-app.delete('/campgrounds/:id', wrapAsync(async(req, res) => {
+app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
 }))
+
+app.use((err, req, res, next) => {
+    res.send('Oh Boy, something went wrong!')
+})
 
 const handleValidationErr = err => {
     console.log(`${err._message}. Cannot add campground - reason: ${err.errors.title.properties.message}`)
