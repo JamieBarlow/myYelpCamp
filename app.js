@@ -6,6 +6,7 @@ const Campground = require('./models/campground');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
 const AppError = require('./AppError');
+const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
 
 // Mongoose
@@ -50,13 +51,6 @@ const verifyPassword = (req, res, next) => {
     return next(new AppError('Password required', 401));
 }
 
-// Generic error handling
-const genericError = (err, req, res, next) => {
-    const { status = 500, message = 'Something went wrong' } = err;
-    console.log(err.status)
-    res.status(status).send(message);
-}
-
 // Routing - home page
 app.get('/', (req, res) => {
     console.log(`request time: ${req.requestTime}`)
@@ -82,6 +76,7 @@ app.get('/campgrounds/new', catchAsync(async (req, res) => {
 
 // CREATE creating new campgrounds
 app.post('/campgrounds', catchAsync(async (req, res, next) => {
+    if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
@@ -116,9 +111,17 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     res.redirect('/campgrounds');
 }))
 
-app.use((err, req, res, next) => {
-    res.send('Oh Boy, something went wrong!')
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404))
 })
+
+// Generic error handling
+const genericError = (err, req, res, next) => {
+    const { status = 500 } = err;
+    if(!err.message) err.message = 'Something went wrong';
+    console.log(err.status)
+    res.status(status).render('errorPage', { err });
+}
 
 const handleValidationErr = err => {
     console.log(`${err._message}. Cannot add campground - reason: ${err.errors.title.properties.message}`)
