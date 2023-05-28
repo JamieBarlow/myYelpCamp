@@ -9,6 +9,7 @@ const ejsMate = require('ejs-mate');
 const AppError = require('./AppError');
 const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
+// Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
 
 
@@ -107,7 +108,7 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
 
 // SHOW route for specific campground
 app.get('/campgrounds/:id', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findById(req.params.id).populate('reviews');
     if (!campground) {
         throw new AppError('Campground Not Found', 404);
     }
