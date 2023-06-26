@@ -11,6 +11,8 @@ const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
 // Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 
 // Mongoose
@@ -34,6 +36,9 @@ app.use(express.urlencoded({ extended: true })) // Used to parse the req.body
 app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
+const sessionOptions = { secret: 'thisisnotagoodsecret', resave: false, saveUninitialized: false }
+app.use(session(sessionOptions));
+app.use(flash());
 
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
@@ -103,6 +108,7 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
     // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
+    req.flash('success', 'Campground successfully created');
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
@@ -112,7 +118,7 @@ app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     if (!campground) {
         throw new AppError('Campground Not Found', 404);
     }
-    res.render('campgrounds/show', { campground });
+    res.render('campgrounds/show', { campground, messages: req.flash('success') });
 }));
 
 // EDIT route (show form for editing item)
