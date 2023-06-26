@@ -18,8 +18,8 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
 const campgrounds = require('./routes/campgrounds');
 const reviews = require('./routes/reviews');
 
-
 // Mongoose
+mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
     useNewUrlParser: true,
     // useCreateIndex: true,
@@ -35,11 +35,15 @@ db.once('open', () => {
 // Middleware
 const app = express();
 app.use(methodOverride('_method'));
+app.use(express.static('public'));
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true })) // Used to parse the req.body
 app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 const sessionOptions = { secret: 'thisisnotagoodsecret', resave: false, saveUninitialized: false }
 app.use(session(sessionOptions));
 app.use(flash());
