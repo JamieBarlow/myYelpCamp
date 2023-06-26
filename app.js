@@ -11,10 +11,12 @@ const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
 const session = require('express-session');
 const flash = require('connect-flash');
-const campgrounds = require('./routes/campgrounds');
 // Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
 
+// Routing
+const campgrounds = require('./routes/campgrounds');
+const reviews = require('./routes/reviews');
 
 
 // Mongoose
@@ -46,16 +48,7 @@ app.use((req, res, next) => {
     next();
 })
 app.use('/campgrounds', campgrounds);
-
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
+app.use('/campgrounds/:id/reviews', reviews);
 
 // For logging middleware
 let requestTime = function (req, res, next) {
@@ -88,23 +81,6 @@ app.get('/secret', verifyPassword, (req, res) => {
     res.send(`MY SECRET IS: Sometimes I wear headphones in public so I
 	don't have to talk to people`)
 })
-
-app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async(req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    const review = new Review(req.body.review);
-    campground.reviews.push(review);
-    await review.save();
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
-    // res.send('You made it!!')
-}))
-
-app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async(req, res) => {
-    const { id, reviewId } = req.params;
-    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
-    await Review.findByIdAndDelete(req.params.reviewId);
-    res.redirect(`/campgrounds/${id}`);
-}))
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
