@@ -9,10 +9,12 @@ const ejsMate = require('ejs-mate');
 const AppError = require('./AppError');
 const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
-// Joi validation schemas:
-const { campgroundSchema, reviewSchema } = require('./schemas');
 const session = require('express-session');
 const flash = require('connect-flash');
+const campgrounds = require('./routes/campgrounds');
+// Joi validation schemas:
+const { campgroundSchema, reviewSchema } = require('./schemas');
+
 
 
 // Mongoose
@@ -43,16 +45,7 @@ app.use((req, res, next) => {
     res.locals.messages = req.flash('success');
     next();
 })
-
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
+app.use('/campgrounds', campgrounds);
 
 const validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
@@ -95,55 +88,6 @@ app.get('/secret', verifyPassword, (req, res) => {
     res.send(`MY SECRET IS: Sometimes I wear headphones in public so I
 	don't have to talk to people`)
 })
-
-// Index of all campgrounds
-app.get('/campgrounds', catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds });
-}))
-
-// NEW form for new campgrounds
-app.get('/campgrounds/new', catchAsync(async (req, res) => {
-    res.render('campgrounds/new');
-}))
-
-// CREATE creating new campgrounds
-app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
-    // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    req.flash('success', 'Campground successfully created');
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-// SHOW route for specific campground
-app.get('/campgrounds/:id', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
-    if (!campground) {
-        throw new AppError('Campground Not Found', 404);
-    }
-    res.render('campgrounds/show', { campground });
-}));
-
-// EDIT route (show form for editing item)
-app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/edit', { campground });
-}));
-
-// UPDATE route
-app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
-    res.redirect(`/campgrounds/${campground._id}`)
-}))
-
-// DESTROY route
-app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect('/campgrounds');
-}))
 
 app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async(req, res) => {
     const campground = await Campground.findById(req.params.id);
