@@ -39,6 +39,10 @@ app.set('views', path.join(__dirname, 'views'));
 const sessionOptions = { secret: 'thisisnotagoodsecret', resave: false, saveUninitialized: false }
 app.use(session(sessionOptions));
 app.use(flash());
+app.use((req, res, next) => {
+    res.locals.messages = req.flash('success');
+    next();
+})
 
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
@@ -118,7 +122,7 @@ app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     if (!campground) {
         throw new AppError('Campground Not Found', 404);
     }
-    res.render('campgrounds/show', { campground, messages: req.flash('success') });
+    res.render('campgrounds/show', { campground });
 }));
 
 // EDIT route (show form for editing item)
