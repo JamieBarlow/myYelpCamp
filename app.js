@@ -11,6 +11,10 @@ const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
 const session = require('express-session');
 const flash = require('connect-flash');
+const User = require('./models/user');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+
 // Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
 
@@ -41,7 +45,6 @@ app.use(express.urlencoded({ extended: true })) // Used to parse the req.body
 app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sessionOptions = { 
@@ -55,12 +58,19 @@ const sessionOptions = {
     }
 }
 app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(flash());
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
+
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
 
@@ -84,7 +94,13 @@ const verifyPassword = (req, res, next) => {
     return next(new AppError('Password required', 401));
 }
 
-// Routing - home page
+// Routing
+app.get('/fakeUser', async (req, res) => {
+    const user = new User({email: 'colttt@gmail.com', username: 'colttt'});
+    const newUser = await User.register(user, 'fakePassword');
+    res.send(newUser);
+})
+
 app.get('/', (req, res) => {
     console.log(`request time: ${req.requestTime}`)
     res.render('home');
