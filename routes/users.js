@@ -32,8 +32,13 @@ router.get('/login', (req, res) => {
 
 router.post('/login', storeReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
     req.flash('success', 'welcome back!');
-    const redirectUrl = res.locals.returnTo || '/campgrounds';
+    let redirectUrl = res.locals.returnTo || '/campgrounds';
+    // Avoiding redirect to '/reviews' route, which returns 'Page Not Found' error'
+    if (redirectUrl.includes('reviews')) {
+        redirectUrl = redirectUrl.slice(0, -8);
+    }
     delete req.session.returnTo;
+    console.log(`redirectUrl: ${redirectUrl}`);
     res.redirect(redirectUrl);
 })
 
