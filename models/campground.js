@@ -11,6 +11,12 @@ const CampgroundSchema = new Schema({
       type: String,
       required: [true, 'Please provide an image URL']  
     },
+    // uploadedImages: [
+    //     {
+    //         url: String,
+    //         filename: String
+    //     }
+    // ],
     creator: String,
     username: String,
     price: {
