@@ -1,6 +1,8 @@
 const { campgroundSchema, reviewSchema } = require('./schemas');
 const Campground = require('./models/campground');
 const Review = require('./models/review');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 module.exports.storeReturnTo = (req, res, next) => {
     if (req.session.returnTo) {
@@ -59,3 +61,8 @@ module.exports.validateReview = (req, res, next) => {
     }
     next();
 }
+
+module.exports.logImageUpload = (req, res) => {
+    console.log('req.body:', req.body);
+    console.log('req.files:', req.files);
+};

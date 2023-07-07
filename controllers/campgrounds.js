@@ -11,15 +11,22 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createCampground = async (req, res, next) => {
     // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
-    const campground = new Campground(req.body.campground);
-    // campground.uploadedImages = req.files.map(f => ({url: f.path, filename: f.filename}));
-    // console.log(campground.uploadedImages);
-    campground.author = req.user._id;
-    await campground.save();
-    console.log(campground);
-    req.flash('success', 'Campground successfully created');
-    res.redirect(`/campgrounds/${campground._id}`);
+    try {
+        const campground = new Campground(req.body.campground);
+        campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        console.log(campground.uploadedImages);
+        campground.author = req.user._id;
+        await campground.save();
+        console.log(campground);
+        req.flash('success', 'Campground successfully created');
+        res.redirect(`/campgrounds/${campground._id}`);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
 }
+  
+  
 
 module.exports.showCampground = async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate({

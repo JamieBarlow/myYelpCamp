@@ -2,8 +2,6 @@ if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
 
-console.log(process.env.CLOUDINARY_CLOUD_NAME)
-
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -14,7 +12,6 @@ const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
 const AppError = require('./AppError');
 const ExpressError = require('./utils/ExpressError');
-const catchAsync = require('./utils/catchAsync');
 const session = require('express-session');
 const flash = require('connect-flash');
 const User = require('./models/user');
