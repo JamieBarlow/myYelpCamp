@@ -62,7 +62,8 @@ module.exports.validateReview = (req, res, next) => {
     next();
 }
 
-module.exports.logImageUpload = (req, res) => {
+module.exports.logImageUpload = (req, res, next) => {
     console.log('req.body:', req.body);
     console.log('req.files:', req.files);
+    next();
 };

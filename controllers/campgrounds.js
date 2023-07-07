@@ -13,14 +13,20 @@ module.exports.createCampground = async (req, res, next) => {
     // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
     try {
         const campground = new Campground(req.body.campground);
-        campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-        console.log(campground.uploadedImages);
-        campground.author = req.user._id;
-        await campground.save();
+        console.log('Campground:');
         console.log(campground);
+        console.log('req.files: ');
+        console.log(req.files);
+        campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        campground.author = req.user._id;
+        console.log('campground.images: ');
+        console.log(campground.images);
+        await campground.save();
+        // console.log(campground);
         req.flash('success', 'Campground successfully created');
         res.redirect(`/campgrounds/${campground._id}`);
     } catch (err) {
+        console.log('Cannot create campground!')
         console.error(err);
         next(err);
     }
