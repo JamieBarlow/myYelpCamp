@@ -5,12 +5,14 @@
             <form action="/campgrounds" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">Name</label>
-                    <input class="form-control" type="text" id="title" name="campground[title]" required aria-describedby="enterName">
+                    <input class="form-control" type="text" id="title" name="campground[title]" required
+                        aria-describedby="enterName">
                     <div id="enterName" class="invalid-feedback">Please enter a name</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="campground[location]" required aria-describedby="enterLocation">
+                    <input class="form-control" type="text" id="location" name="campground[location]" required
+                        aria-describedby="enterLocation">
                     <div id="enterLocation" class="invalid-feedback">Please enter a location</div>
                 </div>
                 <!-- <div class="mb-3">
@@ -18,8 +20,8 @@
                     <input class="form-control" type="text" id="image" name="campground[image]" aria-describedby="enterImgURL">
                     <div id="enterImgURL" class="invalid-feedback">Please enter an image URL</div>
                 </div> -->
-                <div class="mb-3">
-                    <label for="images">Upload image files:</label>
+                <div class="mb-3 custom-file">
+                    <label class="form-label custom-file-label" for="images">Upload image files:</label>
                     <input type="file" class="form-control" name="images" id="images" multiple>
                 </div>
                 <div class="mb-3">
@@ -38,13 +40,13 @@
                         <span class="input-group-text" id="price-label">£</span>
                         <input type="number" class="form-control" id="price" placeholder="0.00" aria-label="price"
                             aria-describedby="enterPrice" name="campground[price]" required>
-                            <div id="enterPrice" class="invalid-feedback">Please enter a price above £0</div>
+                        <div id="enterPrice" class="invalid-feedback">Please enter a price above £0</div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" id="description" name="campground[description]"
-                        required aria-describedby="enterDescription"></textarea>
+                    <textarea class="form-control" type="text" id="description" name="campground[description]" required
+                        aria-describedby="enterDescription"></textarea>
                     <div id="enterDescription" class="invalid-feedback">Please enter a description</div>
                 </div>
                 <div class="mb-3"><button class="btn btn-primary">Add Campground</button></div>
