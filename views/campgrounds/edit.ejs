@@ -2,7 +2,7 @@
     <div class="row">
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="needs-validation">
+            <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">Name</label>
                     <input class="form-control" type="text" id="title" name="campground[title]" value="<%=campground.title%>" required aria-describedby="enterName">
@@ -13,10 +13,14 @@
                     <input class="form-control" type="text" id="location" name="campground[location]" value="<%=campground.location%>" required aria-describedby="enterLocation">
                     <div id="enterLocation" class="invalid-feedback">Please enter a location</div>
                 </div>
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label" for="image">Image URL</label>
                     <input class="form-control" type="text" id="image" name="campground[image]" value="<%=campground.image%>" required aria-describedby="enterImgURL">
                     <div id="enterImgURL" class="invalid-feedback">Please enter an image URL</div>
+                </div> -->
+                <div class="mb-3">
+                    <label class="form-label" for="images">Upload images</label>
+                    <input type="file" name="images" id="images" multiple>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="creator">Image By</label>
