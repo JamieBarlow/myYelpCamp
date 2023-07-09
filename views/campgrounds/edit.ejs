@@ -51,14 +51,19 @@
                         aria-describedby="enterDescription"><%= campground.description %></textarea>
                     <div id="enterDescription" class="invalid-feedback">Please enter a description</div>
                 </div>
-                <div class="mb-3">
-                    <% campground.images.forEach(function(img, i) { %>
-                        <img src="<%= img.url %>" class="img-thumbnail" alt="">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename %>">
-                            <label class="form-check-label" for="image-<%=i%>">Delete</label>
-                        </div>
-                        <% }) %>
+                <div class="mb-3 container">
+                    <div class="row align-items-end">
+                        <% campground.images.forEach(function(img, i) { %>
+                            <div class="col-6">
+                                <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="">
+                                <div class="form-check d-flex justify-content-center gap-3 ps-0">
+                                    <input class="form-check-input" type="checkbox" id="image-<%=i%>"
+                                        name="deleteImages[]" value="<%=img.filename %>">
+                                    <label class="form-check-label" for="image-<%=i%>">Delete</label>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
                 </div>
                 <div class="mb-3"><button class="btn btn-primary">Update Campground</button></div>
             </form>
