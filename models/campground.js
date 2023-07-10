@@ -16,6 +16,7 @@ const CampgroundSchema = new Schema({
         type: String,
         required: [true, 'Name cannot be blank']
     },
+    defaultImg: String,
     images: [ImageSchema],
     creator: String,
     username: String,

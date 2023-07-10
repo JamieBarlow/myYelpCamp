@@ -1,15 +1,21 @@
 <% layout('../layouts/boilerplate')%>
     <link rel="stylesheet" href="/stylesheets/stars.css">
-    <div class="row">
-        <div id="campgroundCarousel" class="carousel slide">
+    <div class="row campgroundDisplay">
+        <div id="campgroundCarousel" class="carousel slide w-50">
             <div class="carousel-inner">
-                <% campground.images.forEach((img, i)=> { %>
-                    <div class="carousel-item <%= i === 0 ? 'active': '' %>">
-                        <img src="<%= img.url %>" class="d-block w-100" alt="">
-                    </div>
-                    <% }) %>
+                <% if(campground.images.length> 1) { %>
+                    <% campground.images.forEach((img, i)=> { %>
+                        <div class="carousel-item <%= i === 0 ? 'active': '' %>">
+                            <img src="<%= img.url %>" class="d-block w-100" alt="">
+                        </div>
+                        <% }) %>
+                            <% } else if(campground.defaultImg) { %>
+                                <div class="carousel-item active">
+                                    <img src="<%= campground.defaultImg %>" class="d-block w-100" alt="">
+                                </div>
+                                <% } %>
             </div>
-            <% if(campground.images.length > 1) { %>
+            <% if(campground.images.length> 1) { %>
                 <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel"
                     data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -129,5 +135,5 @@
     </script>
     <script src="/scripts/showPageMap.js"></script>
     <script>
-        console.log(campground);
+            console.log(campground);
     </script>

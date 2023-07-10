@@ -9,6 +9,8 @@
                 <div class="col-md-4">
                     <% if(campground.images.length) { %>
                         <img class="img-fluid" alt="" src="<%=campground.images[0].url %>">
+                        <% } else if(campground.defaultImg) { %>
+                        <img class="img-fluid" alt="" src="<%=campground.defaultImg %>">
                         <% } else { %>
                             <img class="img-fluid" alt="" src="https://res.cloudinary.com/dakgl7s9n/image/upload/v1688987603/YelpCamp/agoyxcxqghd1kdl8mzrh.jpg">
                             <% } %>
