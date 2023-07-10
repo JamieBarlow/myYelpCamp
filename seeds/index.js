@@ -46,7 +46,8 @@ async function getUnsplashImg() {
 
 // For removing all existing items / testing
 const seedDB = async () => {
-    await Campground.deleteMany({});
+    // Remove this line if you don't want to remove all existing campgrounds when re-seeding!
+    // await Campground.deleteMany({});
     for (let i = 0; i < 40; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
