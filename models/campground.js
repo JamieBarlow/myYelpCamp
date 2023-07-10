@@ -7,7 +7,7 @@ const ImageSchema = new Schema({
     filename: String
 })
 
-ImageSchema.virtual('thumbnail').get(function() {
+ImageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200/r_30/');
 })
 
@@ -25,6 +25,17 @@ const CampgroundSchema = new Schema({
     },
     description: String,
     location: String,
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -36,10 +47,10 @@ const CampgroundSchema = new Schema({
     ]
 })
 
-CampgroundSchema.post('findOneAndDelete', async function(doc) {
-    if(doc) {
+CampgroundSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
         console.log(doc)
-        await Review.deleteMany({_id: {$in: doc.reviews}})
+        await Review.deleteMany({ _id: { $in: doc.reviews } })
     }
 })
 
