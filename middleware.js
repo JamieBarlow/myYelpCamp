@@ -3,6 +3,7 @@ const Campground = require('./models/campground');
 const Review = require('./models/review');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const ExpressError = require('./utils/ExpressError');
 
 module.exports.storeReturnTo = (req, res, next) => {
     if (req.session.returnTo) {
@@ -25,7 +26,8 @@ module.exports.validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
         // For testing
-        console.log('Validation error!!')
+        // console.log('Validation error!!')
+        console.log(error.details);
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
     } else {
