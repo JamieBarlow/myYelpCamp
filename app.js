@@ -17,6 +17,7 @@ const flash = require('connect-flash');
 const User = require('./models/user');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
 
 // Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
@@ -50,6 +51,7 @@ app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(mongoSanitize());
 
 const sessionOptions = { 
     secret: 'thisisnotagoodsecret',
@@ -70,6 +72,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(flash());
 app.use((req, res, next) => {
+    console.log(req.query);
     // console.log('Req.session:')
     // console.log(req.session);
     res.locals.currentUser = req.user;
