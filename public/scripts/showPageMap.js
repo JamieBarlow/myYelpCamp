@@ -6,6 +6,8 @@ const map = new mapboxgl.Map({
     zoom: 9, // starting zoom
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
 const markerIcon = document.querySelector('#marker');
  
 // Create a default Marker and add it to the map.
