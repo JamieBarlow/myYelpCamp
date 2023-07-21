@@ -19,6 +19,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const MongoStore = require('connect-mongo');
+// const dbUrl = process.env.DB_URL;
+const dbUrl = 'mongodb://127.0.0.1:27017/yelp-camp';
 
 // Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
@@ -30,7 +33,7 @@ const userRoutes = require('./routes/users');
 
 // Mongoose
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     // useCreateIndex: true,
     useUnifiedTopology: true
@@ -54,7 +57,20 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
+})
+
+store.on("error", function(e) {
+    console.log("Session Store Error", e)
+})
+
 const sessionOptions = {
+    store,
     name: 'YCSession',
     secret: 'thisisnotagoodsecret',
     resave: false,
