@@ -21,7 +21,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const MongoStore = require('connect-mongo');
 // const dbUrl = process.env.DB_URL;
-const dbUrl = 'mongodb://127.0.0.1:27017/yelp-camp';
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
 
 // Joi validation schemas:
 const { campgroundSchema, reviewSchema } = require('./schemas');
@@ -57,11 +57,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret: 'thisshouldbeabettersecret!'
+        secret
     }
 })
 
@@ -72,7 +74,7 @@ store.on("error", function(e) {
 const sessionOptions = {
     store,
     name: 'YCSession',
-    secret: 'thisisnotagoodsecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
