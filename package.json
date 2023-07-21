@@ -21,5 +21,24 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0",
     "sanitize-html": "^2.11.0"
-  }
+  },
+  "name": "yelpcamp",
+  "version": "1.0.0",
+  "description": "Full-stack CRUD application",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamieBarlow/myYelpCamp.git"
+  },
+  "author": "Jamie Barlow",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamieBarlow/myYelpCamp/issues"
+  },
+  "homepage": "https://github.com/JamieBarlow/myYelpCamp#readme"
 }
