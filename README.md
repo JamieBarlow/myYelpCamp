@@ -6,7 +6,7 @@
 ## Purpose / Background :bulb:
 
 - This is a web application allowing the user to create and review campgrounds, similar to a review site like Yelp.
-- The project forms a major part of Colt Steele's [Web Developer Bootcamp](https://www.udemy.com/course/the-web-developer-bootcamp/) on Udemy. It features full CRUD (Create, Read, Update, Destroy) functionality, and is built using the MERN (MongoDB/Express/Node) stack, with RESTful architecture (exposing CRUD functionality to users with a uniform interface). The app is styled using CSS and BootStrap components.
+- The project forms a major part of Colt Steele's [Web Developer Bootcamp](https://www.udemy.com/course/the-web-developer-bootcamp/) on Udemy. It features full CRUD (Create, Read, Update, Destroy) functionality, and is built using the MongoDB/Express/Node stack, with RESTful architecture (exposing CRUD functionality to users with a uniform interface). The app is styled using CSS and BootStrap components.
 - YelpCamp has proved to be a fantastic first-hand learning exercise, working with the many fundamental considerations that go into fully building and launching a live full-stack application. This includes building on core CRUD functionality with a number of extra technologies to enhance features like form validation, user authentication and authorization, and other means of dealing with common security issues, along with additional UI features such as geocoded cluster maps.
 - Experience with this app has inspired, and will form the foundation for, building future full-stack applications.
 
