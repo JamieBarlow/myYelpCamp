@@ -20,7 +20,7 @@ db.once("open", () => {
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 async function getUnsplashImg() {
-    const clientID = 'ABhnQtYm5-yuKn5fSfByt85dJgpFmSinNcNQdKE1Dds';
+    const clientID = 'c8TzXYUHL2xL7nXYYGFdkY_sq_tLa8YzzZNltagnpro';
     const collection = 483251;
     const endpoint = `https://api.unsplash.com/photos/random/?client_id=${clientID}&collections=${collection}`;
     return await fetch(endpoint)
@@ -46,7 +46,7 @@ async function getUnsplashImg() {
 
 // For removing all existing items / testing
 const seedDB = async () => {
-    // Remove this line if you don't want to remove all existing campgrounds when re-seeding!
+    // Remove this line if you don't want to remove all existing campgrounds when re-seeding!:
     // await Campground.deleteMany({});
     for (let i = 0; i < 40; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
