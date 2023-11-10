@@ -70,17 +70,43 @@ To improve the app's **security**, I used [express-mongo-sanitize](https://www.n
 ### Deployment
 Finally, the app was launched on the [Heroku](https://dashboard.heroku.com/login) platform, using their CLI to push updates directly from my GitHub repo.
 
-## Development Challenges and Lessons :wrench:
+## Development Challenges :wrench:
 
-- Introducing extra features, such as image uploading functionality, began to 'break' other parts of the application, such as the back-end validation required for creating new campgrounds - this was dependent on a specific data model, which had now been modified to handle file uploads. The isssue was initially difficult to diagnose, as it returned 'undefined' errors rather than standard validation errors. This really highlighted the importance of testing and debugging at every stage of development, as well as clear error handling. I found that taking a modular approach to app-building made it far easier to isolate the issue to specific files/functions, in tandem with Git version control, which allowed me to identify the specific changes triggering the issue
-- I learned a lot about the many considerations that go into building a full-stack CRUD application. The project was a really good exercise in breaking an app down into all of its component parts, while seeing how they interrelate. For example, I learned the difference between authentication - registering a user, securely storing their password (with encryption), and confirming their login - and authorization (in addition to requiring a login to access certain content or functions in general, the app also handles specific permissions depending on the user, and applies server-side security measures to restrict this access, as well as hiding content)',
-- I learned about data persistence through the browser session and cookies.',
-- I learned how to approach app-building in a modular way - through templating pages, and creating middleware that can be re-used throughout the app. This avoids duplicating code, and makes things cleaner, easier to read and maintain - really important even for personal projects! One approach taken was using the MVC (Model-View-Controller) design pattern, which taught me how to practically implement a 'separation of concerns' for different parts of the app.",
-- Data models
+Apart from being the most complex and comprehensive app I have worked on to-date, this was my first time working with a 'full-stack' of tech, from front-end layout design, to server-side frameworks like Express, and databases like MongoDB. This naturally taught me a great deal about approaches to troubleshooting and problem-solving.
+
+The interdependence between the many changing parts of a full-stack application, from front-end to back-end, definitely introduces more complexity than with a simpler single-page application. Introducing extra features began to 'break' other parts of the application in unexpected ways.
+
+For example, adding image uploading functionality impacted the back-end validation required for creating new campgrounds - this was dependent on a specific data model, which had now been modified to handle file uploads. The isssue was initially difficult to diagnose, as it returned 'undefined' errors rather than standard validation errors. This really highlighted the importance of testing and debugging at every stage of development, as well as clear error handling. I found that taking a modular approach to app-building made it far easier to isolate the issue to specific files/functions, in tandem with Git version control, which allowed me to identify the specific changes triggering the issue.
+
+As an 'unopinionated' framework, Express is very flexible to work with, but with this naturally comes the potential for undesired issues. Working with middleware required some careful consideration in terms of program flow. Defining my own error-handling middleware was certainly very helpful for logging and debugging, but also chaining these correctly was crucial - at one point, failing to use 'next()' in a simple logger caused a lot of extra problems!
+
+Building an app with a large number of features not only introduces many different options, but adds complexity when bridging the gap between different tech that can achieve similar things. For example, there are many ways to approach validation for form data. After adding both BootStrap validation and JOI server-side validation, there was some conflict - while my front-end markup did not define all fields as 'required', JOI still expected non-empty values, so would throw errors. I therefore had to update my JOI schema to explicitly allow certain empty fields, keeping the two 'in sync.' There were also some complications with review star ratings, whereby a '0' star rating would fail validations, and some extra considerations needed when working with data models that included nested objects.
+
+This was my first time deploying an app to a 'live' production environment outside of GitHub Pages, so I needed to familiarise myself with the Heroku ecosystem, including how to securely apply environment variables. I also needed to consider the separation between development and production environments, in terms of securely handling 'real' user data, and testing before deployment.
+
+## Lessons :mortar_board:
+
+The scope of this project was large, and I learned a lot about the many considerations that go into building a full-stack CRUD application.
+
+Overall, the project was a really good exercise in breaking an app down into all of its component parts, while also understanding how they interrelate. I learned how to approach app-building in a modular way - through templating pages, and by creating middleware that can be re-used throughout the app. This avoids duplicating code, and makes things cleaner, easier to read and maintain - really important for projects of any size! One approach taken was using the MVC (Model-View-Controller) design pattern, which taught me how to practically implement a 'separation of concerns' for different parts of the app.
+
+YelpCamp taught me, first-hand, the benefits of using RESTful routing patterns as a blueprint for the app's CRUD functionality, making the app easier to structure, understand, and ultimately, maintain. This was achieved by linking each user interaction with an associated HTTP verb (e.g. get, post, put, delete), which maps the client-side to an associated server-side function.
+
+In setting up login/register functionality for users, I learned about ways to authenticate users by securely storing their password and other data (with encryption), and using this to confirm their login. I then considered authorization - in addition to requiring a login to access certain content or functions in general, the app would need to apply specific permissions depending on the user, and use server-side security measures to restrict access, as well as hiding content.
+
+To implement this authorization, I needed to make HTTP requests 'stateful' using session and cookie data, which means allowing the app to remember the status of a logged in user and their permissions. This is achieved server-side using session data (with express-session), and passed to the client for cookie-based authentication. To enable cookie signing and parsing, I used the cookie-parser middleware.
+
+The project was a great introduction to data models and relationships. In Mongo, I established a link between models for campgrounds, campground authors, reviews and review authors, using referencing that I built into each data 'schema.' This worked very effectively for a 'one to many' data relationship, such as campgrounds and their associated reviews. In future I hope to explore the possibilities of more complex 'two-way referencing,' as well as comparing with an SQL-based approach.
+
+I learned how to effectively 'seed' my database in a testing environment, which I needed to do multiple times throughout development as my app's data structure evolved. I used the Unsplash Source API to fetch a series of images from a collection, and populated the rest of the data with randomised location names, descriptors, and geocoding data.
+
+While there is plenty more to expore in this area, the project taught me how to address many security concerns, such as database injections, cross-site scripting, and cookie theft. Methods for addressing this included but were not limited to: 'sanitizing' form inputs to prevent unwanted HTML scripting, protecting cookie data by making it accessible via HTTP only, hiding stack trace errors, encrypting password and user data, setting HTTP response headers and a content security policy for resources (using Helmet), and protecting server-side routes from unwanted or unauthorized requests.
+
+Finally, the scope for improving any app is huge, and there are many potential future considerations - for example, further security concerns, requiring server-side limits image uploads and other app usage, and many potential design/UX improvements.
 
 ## Upcoming features :hourglass:
 
-- 
+- Refactor/redesign with React components
 
 ## License :scroll:
 
