@@ -35,33 +35,40 @@
 
 This project has taught me to use a wide range of tech, building on the MongoDB/Express/Node stack with numerous libraries, while also making considered choices about the best tools for each task. For some key examples:
 
+### Templating
 I used [EJS](https://ejs.co/) to create **page templates**, making the layout consistent with a boilerplate and 'partial' layout components such as a navbar, footer and error message pages/popups. This allowed me to increase production efficiency and consistency in the frontend, by taking a modular approach with the app's interface elements. 
 
+### Authorization
 EJS also allowed me to embed or **interpolate JavaScript**, enabling dynamically updated content which could be linked to a specific user and their **authorization/permissions** - for example, showing and hiding the option to leave a review depending on the user's login status, and the option to delete a campground or review only if they are the 'author' of that particular campground or review.
 
+### Data
 **Data** persistence and relationships were managed with [MongoDB](https://www.mongodb.com/). While a 'relational' or SQL-based database would also have worked, MongoDB was chosen because of its frequent pairing and compatibility with both Express and Node.js. This was then ported to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/lp/try4?utm_source=google&utm_campaign=search_gs_pl_evergreen_atlas_core-high-int_prosp-brand_gic-null_emea-gb_ps-all_desktop_eng_lead&utm_term=mongodb%20atlas&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=19609110867&adgroup=142438572621&cq_cmp=19609110867&gad=1&gclid=Cj0KCQiAo7KqBhDhARIsAKhZ4uhJRH26AYKeZLNmxZdrZH4YIdCgIxVNvgxJpqnABENG_UB93ZEMUssaAnTLEALw_wcB), a cloud-based equivalent, easing the transition from a local project to a web-based app. Using Atlas also allowed me to separate my development environment from my production environment, when seeding and testing features of the database.
 
+### Validation
 I paired MongoDB with [Mongoose](https://mongoosejs.com/), which allowed me to define consistent data schemas/models, useful for robust server-side **validation**. For added security, this functionality was extended with the [joi](https://joi.dev/) library, which allowed me to include further server-side validations in the event of any incoming data that bypasses the app's form submission layer, e.g. those made via external API requests. I also implemented client-side validations using [BootStrap](https://getbootstrap.com/), with 'toast' pop-up notifications to provide user feedback. 
 
+### Backend architecture
 I used [Express](https://expressjs.com/) for server-side routing, due to its wide support and flexibility. In the backend, I employed **RESTful routing patterns**, which helped me to establish a structured interaction between the client-side API and the database, allowing for clearly-defined CRUD (Create, Read, Update, Delete) operations. 
 
 To extend Express, I created my own custom **middleware** for general error handling, handling async processes, and validation. This helped to make my code modular and reusable. I integrated this with a [Model-View-Controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) design pattern, maintaining a clear separation of concerns throughout the app.
 
+### Authentication
 The course taught me some very useful fundamentals in terms of **authenticating** a user from scratch, but to simplify the process I used [Passport.js](https://www.passportjs.org/) middleware for Node.js, which provides pre-defined 'strategies' for authenticating usernames/passwords in Express/Node.js. This was extended with [passport-local-mongoose](https://www.npmjs.com/package/passport-local-mongoose), which adds useful methods to the Mongoose data model, while allowing sensitive user data to be stored in secure, encrypted (salted and hashed) form. The end result is a robust and secure registration and login process.
 
+### Session / cookies
 To support handling **session/cookie data**, I added further middleware from libraries such as [express-session](https://www.npmjs.com/package/express-session) and [connect-flash](https://www.npmjs.com/package/connect-flash), which allowed me to **authorize** users within their login session, and use basic cookie data to provide customised flash messages.
 
+### Image uploading
 The app includes **image uploading** functionality for multiple images, for which I used [Multer](https://www.npmjs.com/package/multer) middleware to parse the multipart/form-data (used for submitting image files). The images are hosted and accessed via the [Cloudinary API](https://cloudinary.com/documentation/image_upload_api_reference) using [multer-storage-cloudinary](https://www.npmjs.com/package/multer-storage-cloudinary), rather than directly in the database, which would have limited their file size.
 
+### Geocoding
 I used [Mapbox's geocoding API](https://docs.mapbox.com/api/search/geocoding/) to produce **GeoJSON** coordinates, and the [Mapbox GL JS API](https://docs.mapbox.com/mapbox-gl-js/api/) for displaying campgrounds on individual maps, as well as a combined cluster map, to which I added customized styling, popup navigation links, and additional controls.
 
+### Security
 To improve the app's **security**, I used [express-mongo-sanitize](https://www.npmjs.com/package/express-mongo-sanitize) to help sanitize user inputs and thereby prevent database injections. I also extended JOI with [sanitize-html](https://www.npmjs.com/package/sanitize-html) to prevent cross-site scripting, and used [Helmet](https://www.npmjs.com/package/helmet?activeTab=readme) to set HTTP response headers/content security policy.
 
+### Deployment
 Finally, the app was launched on the [Heroku](https://dashboard.heroku.com/login) platform, using their CLI to push updates directly from my GitHub repo.
-
-## How to Use :page_with_curl:
-
-- 
 
 ## Development Challenges and Lessons :wrench:
 
