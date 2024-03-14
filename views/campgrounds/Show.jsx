@@ -77,7 +77,7 @@ export default function Show({ campground, currentUser }) {
             <li className="list-group-item">
               £{campground.price}.00 per night
             </li>
-            <li class="list-group-item">
+            <li className="list-group-item">
               Photo by{" "}
               <a
                 href={`https://unsplash.com/@${campground.username}?utm_source=campsite-app&utm_medium=referral`}
@@ -92,25 +92,25 @@ export default function Show({ campground, currentUser }) {
           </ul>
           <div id="map"></div>
           {currentUser && campground.author.equals(currentUser._id) && (
-            <div class="card-body">
+            <div className="card-body">
               <a
                 href={`/campgrounds/${campground._id}/edit`}
-                class="card-link btn btn-info"
+                className="card-link btn btn-info"
               >
                 Edit
               </a>
               <form
-                class="d-inline"
+                className="d-inline"
                 action={`/campgrounds/${campground._id}?_method=DELETE`}
                 method="POST"
               >
-                <button class="btn btn-danger">Delete</button>
+                <button className="btn btn-danger">Delete</button>
               </form>
             </div>
           )}
-          <div class="card-footer">
+          <div className="card-footer">
             2 days ago
-            <a href="/campgrounds" class="card-link float-end">
+            <a href="/campgrounds" className="card-link float-end">
               Back to all campgrounds
             </a>
           </div>
@@ -122,16 +122,16 @@ export default function Show({ campground, currentUser }) {
               <form
                 action={`/campgrounds/${campground._id}/reviews`}
                 method="POST"
-                class="mb-3 needs-validation"
+                className="mb-3 needs-validation"
                 novalidate
               >
-                <div class="mb-3">
-                  <fieldset class="starability-grow">
+                <div className="mb-3">
+                  <fieldset className="starability-grow">
                     <legend>Your rating:</legend>
                     <input
                       type="radio"
                       id="no-rate"
-                      class="input-no-rate"
+                      className="input-no-rate"
                       name="review[rating]"
                       value="3"
                       checked
@@ -143,7 +143,7 @@ export default function Show({ campground, currentUser }) {
                       name="review[rating]"
                       value="1"
                     />
-                    <label for="first-rate1" title="Terrible">
+                    <label htmlFor="first-rate1" title="Terrible">
                       1 star
                     </label>
                     <input
@@ -152,7 +152,7 @@ export default function Show({ campground, currentUser }) {
                       name="review[rating]"
                       value="2"
                     />
-                    <label for="first-rate2" title="Not good">
+                    <label htmlFor="first-rate2" title="Not good">
                       2 stars
                     </label>
                     <input
@@ -161,7 +161,7 @@ export default function Show({ campground, currentUser }) {
                       name="review[rating]"
                       value="3"
                     />
-                    <label for="first-rate3" title="Average">
+                    <label htmlFor="first-rate3" title="Average">
                       3 stars
                     </label>
                     <input
@@ -170,7 +170,7 @@ export default function Show({ campground, currentUser }) {
                       name="review[rating]"
                       value="4"
                     />
-                    <label for="first-rate4" title="Very good">
+                    <label htmlFor="first-rate4" title="Very good">
                       4 stars
                     </label>
                     <input
@@ -179,38 +179,41 @@ export default function Show({ campground, currentUser }) {
                       name="review[rating]"
                       value="5"
                     />
-                    <label for="first-rate5" title="Amazing">
+                    <label htmlFor="first-rate5" title="Amazing">
                       5 stars
                     </label>
                   </fieldset>
                 </div>
-                <div class="mb-3">
-                  <label class="form-label" for="body">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="body">
                     Review
                   </label>
                   <textarea
-                    class="form-control"
+                    className="form-control"
                     name="review[body]"
                     id="body"
                     cols="30"
                     rows="3"
                     required
                   ></textarea>
-                  <div id="enterReview" class="invalid-feedback">
+                  <div id="enterReview" className="invalid-feedback">
                     Please enter some text before submitting
                   </div>
                 </div>
-                <button class="btn btn-success">Submit</button>
+                <button className="btn btn-success">Submit</button>
               </form>
               {campground.reviews.map((review) => {
-                <div class="card mb-3">
-                  <div class="card-body">
+                <div className="card mb-3">
+                  <div className="card-body">
                     <h4>{review.rating} stars</h4>
-                    <p class="starability-result" data-rating={review.rating}>
+                    <p
+                      className="starability-result"
+                      data-rating={review.rating}
+                    >
                       Rated: {review.rating} stars
                     </p>
-                    <p class="card-text">Review: {review.body}</p>
-                    <p class="card-subtitle mb-2 text-muted">
+                    <p className="card-text">Review: {review.body}</p>
+                    <p className="card-subtitle mb-2 text-muted">
                       By {review.author.username}
                     </p>
                     {currentUser && review.author.equals(currentUser) && (
@@ -218,7 +221,9 @@ export default function Show({ campground, currentUser }) {
                         action={`/campgrounds/${campground._id}/reviews/${review._id}?_method=DELETE`}
                         method="POST"
                       >
-                        <button class="btn btn-sm btn-danger">Delete</button>
+                        <button className="btn btn-sm btn-danger">
+                          Delete
+                        </button>
                       </form>
                     )}
                   </div>
