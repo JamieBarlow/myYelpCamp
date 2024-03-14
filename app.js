@@ -58,8 +58,9 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true })); // Used to parse the req.body
-app.set("view engine", "ejs");
-app.engine("ejs", ejsMate);
+app.set("view engine", "jsx");
+app.engine("jsx", require("express-react-views".createEngine()));
+// app.engine("ejs", ejsMate);
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(mongoSanitize());
