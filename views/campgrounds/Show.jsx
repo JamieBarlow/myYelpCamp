@@ -1,7 +1,7 @@
 import React from "react";
 import Boilerplate from "../layouts/Boilerplate";
 
-export default function Show({ campground }) {
+export default function Show({ campground, currentUser }) {
   console.log(campground);
   return (
     <Boilerplate>
@@ -68,18 +68,173 @@ export default function Show({ campground }) {
             <li className="list-group-item text-muted">
               {campground.location}
             </li>
-            {/* <li className="list-group-item">
-              Submitted by {campground.author.username}
-            </li> */}
-            {/* <li className="list-group-item">
+            <li className="list-group-item">
+              Submitted by{" "}
+              {campground.author
+                ? campground.author.username
+                : campground.username}
+            </li>
+            <li className="list-group-item">
               £{campground.price}.00 per night
-            </li> */}
-            {/* <li className="list-group-item">
-              Photo by<a href=`https://unsplash.com/@${campground.username}?utm_source=campsite-app&utm_medium=referral`>{campground.creator}</a> on <a href="https://unsplash.com/?utm_source=campsite-app&utm_medium=referral">Unsplash</a>
-            </li> */}
+            </li>
+            <li class="list-group-item">
+              Photo by{" "}
+              <a
+                href={`https://unsplash.com/@${campground.username}?utm_source=campsite-app&utm_medium=referral`}
+              >
+                {campground.creator}
+              </a>{" "}
+              on{" "}
+              <a href="https://unsplash.com/?utm_source=campsite-app&utm_medium=referral">
+                Unsplash
+              </a>
+            </li>
           </ul>
+          <div id="map"></div>
+          {currentUser && campground.author.equals(currentUser._id) && (
+            <div class="card-body">
+              <a
+                href={`/campgrounds/${campground._id}/edit`}
+                class="card-link btn btn-info"
+              >
+                Edit
+              </a>
+              <form
+                class="d-inline"
+                action={`/campgrounds/${campground._id}?_method=DELETE`}
+                method="POST"
+              >
+                <button class="btn btn-danger">Delete</button>
+              </form>
+            </div>
+          )}
+          <div class="card-footer">
+            2 days ago
+            <a href="/campgrounds" class="card-link float-end">
+              Back to all campgrounds
+            </a>
+          </div>
+        </div>
+        <div className="col-6">
+          {currentUser && (
+            <>
+              <h2>Leave a Review</h2>
+              <form
+                action={`/campgrounds/${campground._id}/reviews`}
+                method="POST"
+                class="mb-3 needs-validation"
+                novalidate
+              >
+                <div class="mb-3">
+                  <fieldset class="starability-grow">
+                    <legend>Your rating:</legend>
+                    <input
+                      type="radio"
+                      id="no-rate"
+                      class="input-no-rate"
+                      name="review[rating]"
+                      value="3"
+                      checked
+                      aria-label="No rating."
+                    />
+                    <input
+                      type="radio"
+                      id="first-rate1"
+                      name="review[rating]"
+                      value="1"
+                    />
+                    <label for="first-rate1" title="Terrible">
+                      1 star
+                    </label>
+                    <input
+                      type="radio"
+                      id="first-rate2"
+                      name="review[rating]"
+                      value="2"
+                    />
+                    <label for="first-rate2" title="Not good">
+                      2 stars
+                    </label>
+                    <input
+                      type="radio"
+                      id="first-rate3"
+                      name="review[rating]"
+                      value="3"
+                    />
+                    <label for="first-rate3" title="Average">
+                      3 stars
+                    </label>
+                    <input
+                      type="radio"
+                      id="first-rate4"
+                      name="review[rating]"
+                      value="4"
+                    />
+                    <label for="first-rate4" title="Very good">
+                      4 stars
+                    </label>
+                    <input
+                      type="radio"
+                      id="first-rate5"
+                      name="review[rating]"
+                      value="5"
+                    />
+                    <label for="first-rate5" title="Amazing">
+                      5 stars
+                    </label>
+                  </fieldset>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="body">
+                    Review
+                  </label>
+                  <textarea
+                    class="form-control"
+                    name="review[body]"
+                    id="body"
+                    cols="30"
+                    rows="3"
+                    required
+                  ></textarea>
+                  <div id="enterReview" class="invalid-feedback">
+                    Please enter some text before submitting
+                  </div>
+                </div>
+                <button class="btn btn-success">Submit</button>
+              </form>
+              {campground.reviews.map((review) => {
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h4>{review.rating} stars</h4>
+                    <p class="starability-result" data-rating={review.rating}>
+                      Rated: {review.rating} stars
+                    </p>
+                    <p class="card-text">Review: {review.body}</p>
+                    <p class="card-subtitle mb-2 text-muted">
+                      By {review.author.username}
+                    </p>
+                    {currentUser && review.author.equals(currentUser) && (
+                      <form
+                        action={`/campgrounds/${campground._id}/reviews/${review._id}?_method=DELETE`}
+                        method="POST"
+                      >
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    )}
+                  </div>
+                </div>;
+              })}
+            </>
+          )}
         </div>
       </div>
+      <img src="/pin-marker.PNG" alt="" id="marker" width="40" />
+      <script>
+        const mapToken = process.env.MAPBOX_TOKEN; const campground =
+        JSON.stringify(campground);
+      </script>
+      <script src="/scripts/showPageMap.js"></script>
+      {/* <script>console.log(campground);</script> */}
     </Boilerplate>
   );
 }
