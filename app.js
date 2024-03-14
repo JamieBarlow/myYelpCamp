@@ -59,7 +59,7 @@ app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true })); // Used to parse the req.body
 app.set("view engine", "jsx");
-app.engine("jsx", require("express-react-views".createEngine()));
+app.engine("jsx", require("express-react-views").createEngine());
 // app.engine("ejs", ejsMate);
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -202,7 +202,7 @@ app.get("/fakeUser", async (req, res) => {
 
 app.get("/", (req, res) => {
   console.log(`request time: ${req.requestTime}`);
-  res.render("home");
+  res.render("home", { currentUser: res.locals.currentUser });
 });
 
 // Secret password test
